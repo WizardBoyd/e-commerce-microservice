@@ -1,0 +1,9 @@
+[submodule "eCommerce.UsersService"]
+	path = eCommerce.UsersService
+	url = F:\\dev\\projects\\DotNet\\9.0\\e-commerce-microservice\\eCommerce.UsersService
+[submodule "eCommerce.ProductsService"]
+	path = eCommerce.ProductsService
+	url = F:\\dev\\projects\\DotNet\\9.0\\e-commerce-microservice\\eCommerce.ProductsService
+[submodule "eCommerce.OrdersService"]
+	path = eCommerce.OrdersService
+	url = F:\\dev\\projects\\DotNet\\9.0\\e-commerce-microservice\\eCommerce.OrdersService

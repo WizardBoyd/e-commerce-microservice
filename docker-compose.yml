@@ -1,0 +1,96 @@
+version: "3.8"
+services:
+  mysql-container:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3305:3306"
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce-network
+    hostname: mysql-host-productsmicroservice
+
+  postgres-container:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: eCommerceUsers
+    ports:
+      - "5431:5432"
+    volumes:
+      - "./postgres-init:/docker-entrypoint-initdb.d"
+    networks:
+      - ecommerce-network
+    hostname: postgres-host-authenticationmicroservice
+
+  mongo-container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - "27016:27017"
+    networks:
+      - ecommerce-network
+    volumes:
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    hostname: mongo-host-authenticationmicroservice
+
+  redis-container:
+    image: redis:latest
+    ports:
+      - "6378:6379"
+    volumes:
+      - ./redis-cache:/data
+    networks:
+      - ecommerce-network
+
+  products-microservice:
+    build:
+      context: ./eCommerce.ProductsService
+      dockerfile: src/eCommerce.API/Dockerfile
+    image: productservice:latest
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=mysql-host-productsmicroservice;Database=ecommerceproductsdatabase;UserID=root;Password=admin"
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-network
+
+  authentication-microservice:
+    build:
+      context: ./eCommerce.UsersService
+      dockerfile: src/eCommerce.API/Dockerfile
+    image: authenticationservice:latest
+    environment:
+      ConnectionStrings__PostgresConnection: "Host=postgres-host-authenticationmicroservice; Database=eCommerceUsers; Username=postgres; Password=admin"
+    ports:
+      - "9090:9090"
+    networks:
+      - ecommerce-network
+
+  orders-microservice:
+    build:
+      context: ./eCommerce.OrdersService
+      dockerfile: src/eCommerce.API/Dockerfile
+    image: ordersservice:latest
+    environment:
+      ConnectionStrings__MondoDB: "mongodb://root:admin@mongo-host-authenticationmicroservice/?authSource=admin"
+      ConnectionStrings__Redis: "redis-container:6379"
+      MondoDB__OrdersDatabase: "OrdersDatabase"
+      MondoDB__OrdersCollection: "orders"
+      Microservices__UsersMicroservice: "http://authentication-microservice:9090"
+      Microservices__ProductsMicroservice: "http://products-microservice:8080"
+
+    ports:
+      - "9080:9080"
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge

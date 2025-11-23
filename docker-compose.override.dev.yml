@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  products-microservice:
+    build:
+      context: ./eCommerce.ProductsService
+      dockerfile: src/eCommerce.API/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    image: productservicedev:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  authentication-microservice:
+    build:
+      context: ./eCommerce.UsersService
+      dockerfile: src/eCommerce.API/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    image: authenticationservicedev:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  orders-microservice:
+    build:
+      context: ./eCommerce.OrdersService
+      dockerfile: src/eCommerce.API/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    image: ordersservicedev:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
