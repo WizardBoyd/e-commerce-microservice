@@ -1,0 +1,9 @@
+[submodule "eCommerce.OrdersService"]
+	path = eCommerce.OrdersService
+	url = https://github.com/WizardBoyd/eCommerce.OrdersService.git
+[submodule "eCommerce.UsersService"]
+	path = eCommerce.UsersService
+	url = https://github.com/WizardBoyd/eCommerce.UsersService.git
+[submodule "eCommerce.ProductsService"]
+	path = eCommerce.ProductsService
+	url = https://github.com/WizardBoyd/eCommerce.ProductsService.git
